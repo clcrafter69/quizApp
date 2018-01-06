@@ -1,0 +1,49 @@
+﻿@model QuizWebApp.Models.Question
+
+@{
+    ViewData["Title"] = "Create";
+}
+@ViewBag.QuestionId 
+<h2>Create</h2>
+
+<h4>Question</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />           
+            <div class="form-group row">
+                <label asp-for="Questions" class="control-label"></label>
+                    <input asp-for="Questions" class="form-control" />
+                    <span asp-validation-for="Questions" class="text-danger"></span>            
+             </div>
+            <div class="form-group">
+                <label asp-for="Level" class="control-label"></label>
+                <select asp-for="LevelId" asp-items="Html.GetEnumSelectList<QuizWebApp.Enums.Level>()" class="form-control">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Level" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <select asp-for="CategoryId"  asp-items="Html.GetEnumSelectList<QuizWebApp.Enums.Category>()" class="form-control">
+                 </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    @Html.ActionLink("New Equipment", "Create", "Answer", new { QuestionId = @ViewBag.QuestionId }, null)
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

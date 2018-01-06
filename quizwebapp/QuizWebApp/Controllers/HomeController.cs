@@ -15,6 +15,11 @@ namespace QuizWebApp.Controllers
             return View();
         }
 
+        public IActionResult Quiz()
+        {
+            return View();
+        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

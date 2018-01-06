@@ -1,0 +1,226 @@
+﻿
+@{
+    ViewData["Title"] = "View";
+}
+
+
+
+
+
+<div class="row">
+    <div>
+        <select id="selLevel">
+            <option selected="selected" value="">Please select</option>
+            <option value="1">Beginner</option>
+            <option value="2">Intermediate</option>
+            <option value="3">Advanced</option>
+        </select>
+    </div>
+
+    <div>
+        <select id="selCategory">
+            <option selected="selected" value="">Please select</option>
+            <option value="1">Beginner</option>
+            <option value="2">Intermediate</option>
+            <option value="3">Advanced</option>
+        </select>
+    </div>
+</div>
+
+
+<button type="button" id="start-quiz" class="btn btn-success mr-md-2 mb-0"> Start Quiz!</button>
+<button type="button" id="get-answers" class="btn btn-success mr-md-2 mb-0"> Start Get Answers</button>
+
+<div id="QuestionDiv">
+
+
+</div>
+<div id="AnswerDiv">
+
+
+</div>
+
+
+@section scripts{
+
+    <script>
+
+       ( function() {
+            //global variables
+            var Quizquestion = document.getElementById("QuestionDiv");
+            var Level = document.getElementById("selLevel");
+            var Category = document.getElementById("selCategory");
+            var quizButton = document.getElementById("start-quiz");
+            var ansButton = document.getElementById("get-answers");
+            var currentQuestionId;
+            var startUrl;  //questions query
+            var answersUrl; //answers query
+            var chosenLevel;
+            var chosenCategory;
+            var id = 49;
+
+
+         
+
+
+            // load category list// populate category
+            window.onload = function () {
+                localStorage.currentQuestionId = 0;
+            }
+
+            function GetQuizQuestions(url,callback) {
+
+                ////build select Url
+
+                //startUrl = "/api/quiz/" + chosenLevel.toString() + "/" + chosenCategory.toString();
+
+                //alert(chosenCategory); 
+                
+                makeRequest(url);
+                //answersUrl = "/api/quiz/" + localStorage.currentQuestionId;
+                
+                //if (typeof callback === "function") {
+                //    answersUrl = "/api/quiz/" + localStorage.currentQuestionId;
+                //    callback(answersUrl);
+                //}
+
+            }
+           ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            var makeRequest = function makeRequest(url) {
+                httpRequest = new XMLHttpRequest(); // This is my handle for doing AJAX requests
+                //store the called url
+                //urlCalled= url;
+
+                if (!httpRequest) {
+                    console.log("Error creating SMLHttp object");
+                    return false;
+                }
+                //Determine correct query
+             
+                    alert("this is the getQuestionData Method " );
+                    httpRequest.onreadystatechange = getQuestionData;     
+                    httpRequest.open("GET", url);
+                    httpRequest.send();
+               
+            }
+
+            var makeAnswerRequest = function makeAnswerRequest (url) {
+                httpRequest = new XMLHttpRequest(); // This is my handle for doing AJAX requests
+                //store the called url
+                //urlCalled= url;
+
+                if (!httpRequest) {
+                    console.log("Error creating SMLHttp object");
+                    return false;
+                }
+                //Determine correct query
+                //if (url == startUrl) {
+                //    alert("this is the getQuestionData Method ");
+                //    httpRequest.onreadystatechange = getQuestionData;
+                //}
+                //else if (url == answersUrl) {
+                    httpRequest.onreadystatechange = getAnswersData;
+                //}
+
+                // httpRequest.open("GET", "/api/quiz/2/2");
+                httpRequest.open("GET", url);
+                httpRequest.send();
+            }
+           ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            var getQuestionData = function getQuestionData() {
+                console.log(httpRequest.readyState);
+                if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                    if (httpRequest.status === 200) {
+                        //localStorage.currentQuestionId = 6;
+                        //alert("local storage click count = " + localStorage.clickcount);
+                        var dataArr = JSON.parse(httpRequest.responseText);
+                        //QuestionDiv.innerText = dataArr[0].questions.toString();
+                        alert(QuestionDiv.innerText);
+                        if (localStorage.currentQuestionId < dataArr[0].id)
+                        {
+                            localStorage.currentQuestionId = dataArr[0].id;
+                            QuestionDiv.innerText = dataArr[0].questions.toString();
+                            alert("local storage question Id = " + localStorage.currentQuestionId);
+                            quizButton.disabled = true;
+                        }
+                        else {
+                            QuestionDiv.innerText = "TEST COMPLETE";
+                            quizButton.disabled = true;
+                             }
+                    } else {
+                        console.log("Error: " + httpRequest.status);
+                    }
+                }
+            };
+
+           /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            var getAnswersData = function getAnswersData() {
+                if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                    if (httpRequest.status === 200) {
+                        //localStorage.currentQuestionId = 6;
+                        //alert("local storage click count = " + localStorage.clickcount);
+                        var dataArr = JSON.parse(httpRequest.responseText);
+                        //QuestionDiv.innerText = dataArr[0].questions.toString();
+                        alert(httpRequest.responseText);
+                        alert(dataArr[0].response.toString());
+                        if (localStorage.currentQuestionId <= dataArr[0].questionId) {
+                            if (localStorage.currentQuestionId <= dataArr[0].questionId) {
+                                localStorage.currentQuestionId = dataArr[0].questionId;
+                                AnswerDiv.innerText = dataArr[0].response.toString();
+                                alert("local storage question Id in answer = " + localStorage.currentQuestionId);
+                                alert(dataArr[0].response.toString());
+                                quizButton.disabled = true;
+                            }
+                            else {
+                                QuestionDiv.innerText = "TEST COMPLETE";
+                                quizButton.disabled = true;
+                            }
+                        } else {
+                            console.log("Error: " + httpRequest.status);
+                        }
+                    }
+                }
+            };
+
+
+            //event handlers
+
+            quizButton.addEventListener("click", function () {
+                //build select Url
+
+                startUrl = "/api/quiz/" + chosenLevel.toString() + "/" + chosenCategory.toString();
+                //answersUrl = "/api/quiz/" + localStorage.currentQuestionId;
+                //GetQuizQuestions(startUrl);
+                //GetQuizQuestions(answersUrl);  //can use to get questions
+                GetQuizQuestions(startUrl, makeAnswerRequest);
+                //GetQuizQuestions(startUrl);   
+                //alert("this is a test of quiz question button!")
+            });
+
+            ansButton.addEventListener("click", function () {
+                //build select Url
+
+               // startUrl = "/api/quiz/" + chosenLevel.toString() + "/" + chosenCategory.toString();
+                answersUrl = "/api/quiz/" + localStorage.currentQuestionId;
+                //GetQuizQuestions(startUrl);
+                //GetQuizQuestions(answersUrl);  //can use to get questions
+                makeAnswerRequest(answersUrl);
+                //GetQuizQuestions(startUrl);   
+                //alert("this is a test of quiz question button!")
+            });
+
+            Level.addEventListener("change", function () {
+                //alert("this is a test of level " + Level.value);
+                chosenLevel = Level.value;
+            });
+
+            Category.addEventListener("change", function () {
+                //alert("this is category" + Category.value);
+                chosenCategory = Category.value;
+            });
+        })();
+
+   
+    </script>
+
+}

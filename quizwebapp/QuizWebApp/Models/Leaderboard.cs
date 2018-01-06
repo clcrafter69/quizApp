@@ -14,6 +14,7 @@ namespace QuizWebApp.Models
         public int Level { get; set; }
 
         public int ScoreId { get; set; }
+        public ScoreLevel ScoreLevel { get; set; }
         
     }
 }
