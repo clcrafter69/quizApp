@@ -11,10 +11,10 @@ namespace QuizWebApp.Models
 {
     public class Question
     {
-        public Question()
-        {
-            Answers = new List<Answer>();
-        }
+        //public Question()
+        //{
+        //    Answers = new List<Answer>();
+        //}
         public int Id { get; set; }
         public string Questions { get; set; }
 
@@ -27,10 +27,12 @@ namespace QuizWebApp.Models
         public int CategoryId { get; set; }
 
         [NotMapped]
-        public Category Category { get; set; }  
-        
-       //navigation properties
-        public List<Answer> Answers { get; set; }
+        public Category Category { get; set; }
+
+        //navigation properties
+        public List<Answer> Answers { get; set; } = new List<Answer>();
+
+       
 
 
     }

@@ -40,15 +40,19 @@ namespace QuizWebApp.Data
         }
         public List<Question> ListAllQuestions()
         {
-            //return _dbContext.Questions
-            //      .ToList();
-            return _dbContext.Questions.Include(a=> a.Answers)
+            return _dbContext.Questions
                   .ToList();
+
         }
         public List<Question> ListAllQuestionsByCategory(int level, int category)
         {
             return _dbContext.Questions.Where( a=>a.LevelId == level && a.CategoryId == category).OrderBy(a=>a.Id)
                   .ToList();
+        }
+        public Question GetQAnswers(int id)
+        {
+            var questionblock =  _dbContext.Questions.Include(a => a.Answers).Where(a => a.Id == id).FirstOrDefault();
+            return questionblock;     
         }
 
         public void UpdateQuestion(Question changedQuestion)

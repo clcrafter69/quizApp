@@ -39,6 +39,10 @@
 
 
 </div>
+<div id="CorrectDiv">
+
+
+</div>
 
 
 @section scripts{
@@ -47,7 +51,8 @@
 
        ( function() {
             //global variables
-            var Quizquestion = document.getElementById("QuestionDiv");
+           var Quizquestion = document.getElementById("QuestionDiv");
+           var Correct = document.getElementById("AnswerDiv");
             var Level = document.getElementById("selLevel");
             var Category = document.getElementById("selCategory");
             var quizButton = document.getElementById("start-quiz");
@@ -58,6 +63,7 @@
             var chosenLevel;
             var chosenCategory;
             var id = 49;
+            var answer = []
 
 
          
@@ -153,6 +159,26 @@
                 }
             };
 
+            function Answer(id, correct)
+            {
+                this.id = id;
+                this.correct = correct;
+
+            }
+
+            var checkAnswer = function checkAnswer(id)
+            {
+                //check to see if the user's choice is correct'
+                for (var i = 0; i <= answer.length; i++)
+                {
+                    if ((id === answer[i].id.toString()) && (answer[i].correct == 0))
+                        return "You are Incorrect";
+                    if ((id === answer[i].id.toString()) && (answer[i].correct == 1))
+                        return "You are Correct!";
+                }
+                return "Answer has not been evaluated";
+            }
+
            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             var getAnswersData = function getAnswersData() {
                 if (httpRequest.readyState === XMLHttpRequest.DONE) {
@@ -163,21 +189,45 @@
                         //QuestionDiv.innerText = dataArr[0].questions.toString();
                         alert(httpRequest.responseText);
                         alert(dataArr[0].response.toString());
-                        if (localStorage.currentQuestionId <= dataArr[0].questionId) {
-                            if (localStorage.currentQuestionId <= dataArr[0].questionId) {
-                                localStorage.currentQuestionId = dataArr[0].questionId;
-                                AnswerDiv.innerText = dataArr[0].response.toString();
-                                alert("local storage question Id in answer = " + localStorage.currentQuestionId);
-                                alert(dataArr[0].response.toString());
-                                quizButton.disabled = true;
-                            }
-                            else {
-                                QuestionDiv.innerText = "TEST COMPLETE";
-                                quizButton.disabled = true;
-                            }
-                        } else {
-                            console.log("Error: " + httpRequest.status);
-                        }
+                        //var answerForm = document.createElement("form");
+                        //if (localStorage.currentQuestionId <= dataArr[0].questionId) {
+                        //    dataArr.forEach(function (value, index){
+                                
+                        //            var newAnswerItem = document.createElement("button");
+                        //            newAnswerItem.innerText = value.response;
+                        //            newAnswerItem.id = value.id;
+                        //            //newAnswerItem.addEventListener("click", function (e) {
+                        //            //    if (e.target && e.target.id == newAnswerItem.id) {
+                        //            //        var correctAnswer = checkAnswer(newAnswerItem.id);
+                        //            //    }
+                        //            //});
+                        //            answerForm.appendChild(newAnswerItem);
+
+                        //        //populate answer object to check answers when button is checked.
+                        //            var answerItem = { id: value.id, correct: value.correct };
+                        //            answer.push(answerItem);
+                        //    }
+                               
+                            //);
+
+                            //Correct.appendChild(answerForm);
+
+                            //if (localStorage.currentQuestionId <= dataArr[0].questionId) {
+                            //    localStorage.currentQuestionId = dataArr[0].questionId;
+                            //    //AnswerDiv.innerText = dataArr[0].response.toString();
+                            //    alert("local storage question Id in answer = " + localStorage.currentQuestionId);
+                            //    alert(dataArr[0].response.toString());
+                            //    quizButton.disabled = true;
+                                
+                            //    }
+                            
+                            //else {
+                            //    QuestionDiv.innerText = "TEST COMPLETE";
+                            //    quizButton.disabled = true;
+                            //}
+                        //} else {
+                        //    console.log("Error: " + httpRequest.status);
+                        //}
                     }
                 }
             };
@@ -192,16 +242,14 @@
                 //answersUrl = "/api/quiz/" + localStorage.currentQuestionId;
                 //GetQuizQuestions(startUrl);
                 //GetQuizQuestions(answersUrl);  //can use to get questions
-                GetQuizQuestions(startUrl, makeAnswerRequest);
-                //GetQuizQuestions(startUrl);   
+               // GetQuizQuestions(startUrl, makeAnswerRequest);
+                GetQuizQuestions(startUrl);   
                 //alert("this is a test of quiz question button!")
             });
 
             ansButton.addEventListener("click", function () {
-                //build select Url
-
-               // startUrl = "/api/quiz/" + chosenLevel.toString() + "/" + chosenCategory.toString();
-                answersUrl = "/api/quiz/" + localStorage.currentQuestionId;
+      
+                answersUrl = "/api/quiz/" + localStorage.currentQuestionId + "/answers";
                 //GetQuizQuestions(startUrl);
                 //GetQuizQuestions(answersUrl);  //can use to get questions
                 makeAnswerRequest(answersUrl);

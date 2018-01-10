@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuizWebApp.Models;
 using QuizWebApp.Data;
+using QuizWebApp.Entities;
 
 namespace QuizWebApp.Controllers
 {
@@ -34,11 +35,40 @@ namespace QuizWebApp.Controllers
 
         // GET: api/Quiz/5
 
-        [HttpGet("{id}", Name = "GetAnswers")]
-        public List<Answer> GetAnswers(int id)
+        //[HttpGet("{id}", Name = "GetAnswers")]
+        //public List<Answer> GetAnswers(int id)
+        //{
+        //    // return "value";
+        //    return _answerRepo.ListEditAnswers(id);
+
+        //}
+
+
+        [HttpGet("{id}/answers", Name = "GetAnswers")]
+        public IActionResult GetQAnswers(int id)
         {
             // return "value";
-            return _answerRepo.ListEditAnswers(id);
+            var result= _questionRepo.GetQAnswers(id);
+            var questionResult = new QuestionMap()
+            {
+                Id = result.Id,
+                Questions = result.Questions,
+                LevelId = result.LevelId,
+                CategoryId = result.Id
+
+            };
+            foreach (var ans in result.Answers)
+            {
+                questionResult.Answers.Add(
+                  new AnswerMap()
+                  {
+                      Id = ans.Id,
+                      Response = ans.Response,
+                      Correct = ans.Correct
+                  });                    
+            }
+            //return result;
+            return Ok(questionResult);
 
         }
 

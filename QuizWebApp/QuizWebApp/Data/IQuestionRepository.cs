@@ -15,5 +15,6 @@ namespace QuizWebApp.Data
         void UpdateQuestion(Question changedQuestion);
         List<Answer> GetQuestionAndAnsByID(int id);
         List<Question> ListAllQuestionsByCategory(int level, int category);
+        Question GetQAnswers(int id);
     }
 }
