@@ -10,9 +10,9 @@ namespace QuizWebApp.Data
     {
         Answer AddAnswer(Answer newBlog);
         void DeleteAnswer(Answer answerToDelete);
-        Answer GetBlogById(int id);
         List<Answer> ListAllAnswers();
         void UpdateAnswer(Answer changedAnswer);
         List<Answer> ListEditAnswers(int id);
+        Answer GetAnswerById(int id);
     }
 }

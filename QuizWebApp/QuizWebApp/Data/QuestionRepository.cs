@@ -26,7 +26,10 @@ namespace QuizWebApp.Data
 
         public void DeleteQuestion(Question questionToDelete)
         {
-            throw new NotImplementedException();
+
+            _dbContext.Questions.Remove(questionToDelete);
+            _dbContext.SaveChanges();
+           // throw new NotImplementedException();
         }
 
         public Question GetQuestionById(int id)
@@ -57,7 +60,9 @@ namespace QuizWebApp.Data
 
         public void UpdateQuestion(Question changedQuestion)
         {
-            throw new NotImplementedException();
+            _dbContext.Entry<Question>(changedQuestion).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _dbContext.SaveChanges();
+          //  throw new NotImplementedException();
         }
     }
 }

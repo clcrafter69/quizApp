@@ -1,0 +1,44 @@
+﻿@model QuizWebApp.Models.AnswerViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Answer</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Answers.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Answers.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Answers.Response)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Answers.Response)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Answers.Correct)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Answers.Correct)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Answers.QuestionId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Answers.QuestionId)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        @Html.ActionLink("Back To List", "EditedList", "Answer", new { QuestionId = Model.Answers.QuestionId }, null)
+    </form>
+</div>

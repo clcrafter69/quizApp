@@ -1,0 +1,42 @@
+﻿@model QuizWebApp.Models.AnswerViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Answer Details</h2>
+
+<div>
+    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Answers.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Answers.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Answers.Response)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Answers.Response)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Answers.Correct)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Answers.Correct)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Answers.QuestionId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Answers.QuestionId)
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new {  id = Model.Answers.Id }) |
+    @Html.ActionLink("Back To List", "EditedList", "Answer", new { QuestionId = Model.Answers.QuestionId }, null)
+</div>

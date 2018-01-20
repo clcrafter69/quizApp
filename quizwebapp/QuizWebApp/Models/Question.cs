@@ -16,6 +16,8 @@ namespace QuizWebApp.Models
         //    Answers = new List<Answer>();
         //}
         public int Id { get; set; }
+
+        [Required]
         public string Questions { get; set; }
 
         //difficulty level

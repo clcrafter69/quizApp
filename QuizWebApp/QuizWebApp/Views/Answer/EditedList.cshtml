@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<QuizWebApp.Models.Answer>
 
 @{
-    ViewData["Title"] = "EditedList";
+    ViewData["Title"] = "Answer Dashboard";
 }
 
-<h2>EditedList</h2>
+<h2>Answer Dashboard</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    
 </p>
 <table class="table">
     <thead>
@@ -44,10 +44,13 @@
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new {id=item.Id  })
             </td>
         </tr>
 }
     </tbody>
 </table>
+<div>
+    @Html.ActionLink("Back To List", "Index", "Question", null)
+</div>

@@ -1,22 +1,20 @@
 ﻿@model QuizWebApp.Models.AnswerViewModel
 
 @{
-    ViewData["Title"] = "Create";
-   //ViewBag.currentQuestionId;
+    ViewData["Title"] = "Edit";
 }
 
-<h2>Create Answers</h2>
-
+<h2>Add Answer</h2>
 
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Answers.Id" />   
+            <input type="hidden" asp-for="Answers.Id" />
             <div class="form-group">
                 <label asp-for="Answers.Response" class="control-label"></label>
-                <input asp-for="Answers.Response"  class="form-control" />
+                <input asp-for="Answers.Response" class="form-control" />
                 <span asp-validation-for="Answers.Response" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -28,20 +26,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Answers.QuestionId" class="control-label"></label>
-                <input asp-for="Answers.QuestionId" value="@Model.currentQuestionId" class="form-control" />
+                <input asp-for="Answers.QuestionId" value="@Model.currentQuestionId" class="form-control"  />
                 <span asp-validation-for="Answers.QuestionId" class="text-danger"></span>
-            </div>  
+            </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a  asp-controller="Question" asp-action="Index">Back to List</a>
+    @Html.ActionLink("Back To List", "EditedList", "Answer", new { QuestionId = Model.Answers.QuestionId }, null)
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

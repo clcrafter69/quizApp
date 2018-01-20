@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuizWebApp.Data;
@@ -9,6 +10,7 @@ using QuizWebApp.Models;
 
 namespace QuizWebApp.Controllers
 {
+    [Authorize]
     public class QuestionController : Controller
     {
         private readonly IQuestionRepository _questionRepo;
@@ -30,7 +32,10 @@ namespace QuizWebApp.Controllers
         // GET: Quiz/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            Question question = _questionRepo.GetQuestionById(id);
+            ViewBag.QuestionID = id;
+            return View(question);
+            
         }
 
         // GET: Quiz/Create
@@ -74,12 +79,12 @@ namespace QuizWebApp.Controllers
         // POST: Quiz/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Question changedQuestion, IFormCollection collection)
         {
             try
             {
                 // TODO: Add update logic here
-
+                _questionRepo.UpdateQuestion(changedQuestion);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -91,7 +96,7 @@ namespace QuizWebApp.Controllers
         // GET: Quiz/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            return View(_questionRepo.GetQuestionById(id));
         }
 
         // POST: Quiz/Delete/5
@@ -102,8 +107,10 @@ namespace QuizWebApp.Controllers
             try
             {
                 // TODO: Add delete logic here
-
+                _questionRepo.DeleteQuestion(_questionRepo.GetQuestionById(id));
                 return RedirectToAction(nameof(Index));
+
+              //  return RedirectToAction(nameof(Index));
             }
             catch
             {

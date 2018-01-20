@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace QuizWebApp.Models
         public bool Correct { get; set; }
 
         //navigation properties
+       
         public int QuestionId { get; set; }
         public Question Question { get; set; }
     }

@@ -1,50 +1,73 @@
 ﻿
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "Quiz";
 }
 
 
+<section>
+    <div class="row">
+        <form class="form-inline">
+            
+            <div class="row buttonForm">  
+                <label for="selLevel" class="quizLabel">Difficulty:</label>
+                <div class="form-group dropdownDesign">
+                   
+                    <select id="selLevel">
+                        <option selected="selected" value="">Please select</option>
+                        <option value="1">Beginner</option>
+                        <option value="2">Intermediate</option>
+                        <option value="3">Advanced</option>
+                    </select>
+                </div>
+
+                <label for="selCategory"  class="quizLabel">Category:</label>
+                <div class="form-group dropdownDesign">               
+                    <select id="selCategory">
+                        <option selected="selected" value="">Please select</option>
+                        <option value="1">History</option>
+                        <option value="2">Science</option>
+                        <option value="3">Literature</option>
+                        <option value="4">Finance</option>
+                    </select>
+                </div>
+
+                <button type="button" id="start-quiz" class="btn btn-warning mr-md-2 mb-0 buttonForm"> Load Quiz!</button>
+                <button type="button" id="get-answers" class="btn btn-warning mr-md-2 mb-0"> Begin Quiz!</button>
+            </div>
 
 
 
-<div class="row">
-    <div>
-        <select id="selLevel">
-            <option selected="selected" value="">Please select</option>
-            <option value="1">Beginner</option>
-            <option value="2">Intermediate</option>
-            <option value="3">Advanced</option>
-        </select>
+        </form>
+
+        <div id="QAForm" class="quizForm  col-md-7 row">
+            <div id="QuestionDiv">
+
+
+            </div>
+
+            <div id="AnswerDiv">
+
+
+            </div>
+
+            <div id="CorrectDiv">
+
+
+            </div>
+            <div id="ExplainDiv">
+            </div>
+        </div>
     </div>
 
-    <div>
-        <select id="selCategory">
-            <option selected="selected" value="">Please select</option>
-            <option value="1">Beginner</option>
-            <option value="2">Intermediate</option>
-            <option value="3">Advanced</option>
-        </select>
+    <div class="row">
+        <div id="FinalDiv">
+
+
+        </div>
+        <button type="button" id="next-question" class="btn btn-success mr-md-2 mb-0 hideButton"> Next Question</button>
+        <button type="button" id="submit-answer" class="btn btn-success mr-md-2 mb-0 hideButton"> Submit Answers</button>
     </div>
-</div>
-
-
-<button type="button" id="start-quiz" class="btn btn-success mr-md-2 mb-0"> Start Quiz!</button>
-<button type="button" id="get-answers" class="btn btn-success mr-md-2 mb-0"> Start Get Answers</button>
-
-<div id="QuestionDiv">
-
-
-</div>
-<div id="AnswerDiv">
-
-
-</div>
-<div id="CorrectDiv">
-
-
-</div>
-
-
+</section>
 @section scripts{
 
     <script>
@@ -53,17 +76,27 @@
             //global variables
            var Quizquestion = document.getElementById("QuestionDiv");
            var Correct = document.getElementById("AnswerDiv");
+           var Explain = document.getElementById("ExplainDiv");
+           var Final = document.getElementById("FinalDiv");
+           var QA = document.getElementById("QAForm");
             var Level = document.getElementById("selLevel");
             var Category = document.getElementById("selCategory");
             var quizButton = document.getElementById("start-quiz");
             var ansButton = document.getElementById("get-answers");
+            var nextButton = document.getElementById("next-question");
+            var subButton = document.getElementById("submit-answer");
             var currentQuestionId;
             var startUrl;  //questions query
             var answersUrl; //answers query
             var chosenLevel;
             var chosenCategory;
-            var id = 49;
-            var answer = []
+            var radioDiv; 
+            var clickCount = 0;
+            var correctCount = 0;
+            //var id = 49;
+            var answer = [];
+            var question = [];
+            var questionIndex = 0;
 
 
          
@@ -72,6 +105,11 @@
             // load category list// populate category
             window.onload = function () {
                 localStorage.currentQuestionId = 0;
+                nextButton.style.display = "none";
+                subButton.style.display = "none";
+                QA.style.display = "none";
+                Final.style.display = "none";
+              //  Quizquestion.style.display = "none";
             }
 
             function GetQuizQuestions(url,callback) {
@@ -103,7 +141,7 @@
                 }
                 //Determine correct query
              
-                    alert("this is the getQuestionData Method " );
+                    //alert("this is the getQuestionData Method " );
                     httpRequest.onreadystatechange = getQuestionData;     
                     httpRequest.open("GET", url);
                     httpRequest.send();
@@ -141,12 +179,18 @@
                         //alert("local storage click count = " + localStorage.clickcount);
                         var dataArr = JSON.parse(httpRequest.responseText);
                         //QuestionDiv.innerText = dataArr[0].questions.toString();
-                        alert(QuestionDiv.innerText);
+
+                        QuestionDiv.innerText = "Welcome to the " + Category[chosenCategory].innerText + " Assessment Quiz -- " + Level[chosenLevel].innerText;
+                        QA.style.display = "block";
+                        //alert(QuestionDiv.innerText);
                         if (localStorage.currentQuestionId < dataArr[0].id)
                         {
-                            localStorage.currentQuestionId = dataArr[0].id;
-                            QuestionDiv.innerText = dataArr[0].questions.toString();
-                            alert("local storage question Id = " + localStorage.currentQuestionId);
+                            //store question ids for quiz
+                            storeQuizIds(dataArr);
+                            //localStorage.currentQuestionId = dataArr[0].id;
+                             question[0] = dataArr[0].id;
+                           // QuestionDiv.innerText = dataArr[0].questions.toString();
+                            //alert("local storage question Id = " + localStorage.currentQuestionId);
                             quizButton.disabled = true;
                         }
                         else {
@@ -159,6 +203,16 @@
                 }
             };
 
+            var storeQuizIds = function storeQuizIds(idArray)
+            {
+
+                for (var i = 0; i <= idArray.length; i++)
+                {
+                    question.push(idArray[i]);
+
+                }
+            }
+
             function Answer(id, correct)
             {
                 this.id = id;
@@ -169,14 +223,42 @@
             var checkAnswer = function checkAnswer(id)
             {
                 //check to see if the user's choice is correct'
-                for (var i = 0; i <= answer.length; i++)
+                for (var i = 0; i < answer.length; i++)
                 {
-                    if ((id === answer[i].id.toString()) && (answer[i].correct == 0))
-                        return "You are Incorrect";
-                    if ((id === answer[i].id.toString()) && (answer[i].correct == 1))
-                        return "You are Correct!";
+                    if ((id === answer[i].id) && (answer[i].correct == 0)) {
+                        clickCount++;
+                        Explain.innerText = "You are Incorrect";
+                        return;
+                    }
+                    if ((id === answer[i].id) && (answer[i].correct == 1)) {
+                        correctCount++;
+                        clickCount++;
+                        Explain.innerText = "You are Correct!";
+                        return;
+                    }
                 }
                 return "Answer has not been evaluated";
+            }
+
+            var disableButtons = function disableButtons(input)
+            {
+                var els = document.getElementsByName(input);
+                for (var i = 0; i < els.length; i++)
+                {
+                    els[i].disabled = true;
+
+                }
+                nextButton.disabled = false;
+                if (clickCount >= question.length-1)
+                {
+                    FinalDiv.innerText = "The Quiz Is Now Complete. Submit to see your Final Score";
+                    nextButton.style.display = "none";
+                    subButton.style.display = "block";
+                    return;
+                   
+
+                }
+
             }
 
            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,8 +269,71 @@
                         //alert("local storage click count = " + localStorage.clickcount);
                         var dataArr = JSON.parse(httpRequest.responseText);
                         //QuestionDiv.innerText = dataArr[0].questions.toString();
-                        alert(httpRequest.responseText);
-                        alert(dataArr[0].response.toString());
+
+                        ////if no more answers....consider the quiz complete
+                        //if (dataArr.answers.length == 0)
+                        //{
+
+                        //    QuestionDiv.innerText = "The Quiz Is Now Complete. Submit to see your Final Score";
+                        //    Correct.innerHTML = "";
+                        //    nextButton.disabled = true;
+                        //    return;
+                        //}
+
+                        //alert(httpRequest.responseText);
+                        var answerForm = document.createElement("form");
+                      
+                        answerForm.classList.add("form-group", "col-md-8","quizForm");
+                        if (localStorage.currentQuestionId < dataArr.id) {
+                            localStorage.currentQuestionId = dataArr.id;
+                            questionIndex++;
+                        }
+
+                        //clear Correct div
+                        Correct.innerHTML = "";
+                        //disable not show Next question
+                        nextButton.style.display = "block";
+                        nextButton.disabled = true;
+                        QuestionDiv.innerText = dataArr.questions;
+                        dataArr.answers.forEach(function (value, index, originalArray) {
+                            //add to Answer array
+                            var objAns = {};
+                            objAns["id"] = value.id;
+                            objAns["correct"] = value.correct;
+                            answer.push(objAns);
+
+                            radioDiv = document.createElement("div");
+                            radioDiv.classList.add("form-check");
+                            var answerItem = document.createElement("input");
+                            answerItem.setAttribute("type", "radio");
+                            answerItem.setAttribute("id", value.id);
+                            answerItem.setAttribute("name", "quizRadio");
+                            answerItem.addEventListener("change", function () {
+                                var check = checkAnswer(value.id);
+                                disableButtons("quizRadio");
+                             });
+                
+
+                            var lblAnswer = document.createElement("label");
+                            lblAnswer.classList.add("form-check-label");
+                            var textAnswer = document.createTextNode(value.response);
+                            lblAnswer.appendChild(textAnswer);
+                            radioDiv.appendChild(answerItem);
+                            radioDiv.appendChild(lblAnswer);
+                            //answerForm.appendChild(answerItem);
+                            //answerForm.appendChild(lblAnswer);
+                            answerForm.appendChild(radioDiv);
+                            //var rButtons = document.getElementsByName("quizRadio"); 
+                        });
+
+                        
+
+                        //for (var i = 0; rButtons[i]; i++) {
+                        //    rButtons[i].onclick = checkAnswer(rButtons[i].id);
+
+                        //}
+                        Correct.appendChild(answerForm);
+
                         //var answerForm = document.createElement("form");
                         //if (localStorage.currentQuestionId <= dataArr[0].questionId) {
                         //    dataArr.forEach(function (value, index){
@@ -238,23 +383,55 @@
             quizButton.addEventListener("click", function () {
                 //build select Url
 
-                startUrl = "/api/quiz/" + chosenLevel.toString() + "/" + chosenCategory.toString();
-                //answersUrl = "/api/quiz/" + localStorage.currentQuestionId;
-                //GetQuizQuestions(startUrl);
-                //GetQuizQuestions(answersUrl);  //can use to get questions
-               // GetQuizQuestions(startUrl, makeAnswerRequest);
+                startUrl = "/api/quiz/" + chosenLevel.toString() + "/" + chosenCategory.toString();               
                 GetQuizQuestions(startUrl);   
                 //alert("this is a test of quiz question button!")
+                Level.disabled = true;
+                Category.disabled = true;
+                
             });
 
             ansButton.addEventListener("click", function () {
-      
-                answersUrl = "/api/quiz/" + localStorage.currentQuestionId + "/answers";
+
+                answersUrl = "/api/quiz/" + question[questionIndex] + "/answers";
                 //GetQuizQuestions(startUrl);
                 //GetQuizQuestions(answersUrl);  //can use to get questions
                 makeAnswerRequest(answersUrl);
-                //GetQuizQuestions(startUrl);   
-                //alert("this is a test of quiz question button!")
+
+                //add event listener to the radio button
+
+                //var rButtons = document.getElementsByName("quizRadio");
+
+                //for (var i = 0; rButtons[i]; i++) {
+                //    rButtons[i].onclick = checkAnswer(rButtons[i].id);
+
+                //}
+                ansButton.disabled = true;
+
+            });
+
+            nextButton.addEventListener("click", function () {
+
+                answersUrl = "/api/quiz/" + question[questionIndex].id + "/answers";
+                //GetQuizQuestions(startUrl);
+                //GetQuizQuestions(answersUrl);  //can use to get questions
+                makeAnswerRequest(answersUrl);
+                Explain.innerHTML = "";
+            });
+
+            subButton.addEventListener("click", function () {
+                Final.style.display = "block";
+                if ((correctCount / clickCount) > .50)
+                {
+                    Final.innerText = " You answered " + correctCount + "  out of " + clickCount+ " questions correctly-- PASS";                       
+                }
+                else
+                {
+                    Final.innerText = " You answered " + correctCount + "  out of " + clickCount + " questions correctly-- FAIL"; 
+
+                }
+                subButton.disabled = true;
+
             });
 
             Level.addEventListener("change", function () {

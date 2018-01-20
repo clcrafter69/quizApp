@@ -36,7 +36,13 @@ namespace QuizWebApp.Controllers
         // GET: Answer/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            Answer answer = _answerRepo.GetAnswerById(id);
+            AnswerViewModel answerViewModel = new AnswerViewModel();
+            answerViewModel.currentQuestionId = answer.QuestionId;
+            answerViewModel.Answers = answer;
+            //answerViewModel.Answers.Response = answer.Response;
+            //answerViewModel.Answers.Correct = answer.Correct;
+            return View(answerViewModel);
         }
 
         // GET: Answer/Create
@@ -79,19 +85,30 @@ namespace QuizWebApp.Controllers
         // GET: Answer/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            
+            Answer answer = _answerRepo.GetAnswerById(id);
+            AnswerViewModel answerViewModel = new AnswerViewModel();
+            answerViewModel.currentQuestionId = answer.QuestionId;
+            answerViewModel.Answers = answer;
+            //answerViewModel.Answers.Response = answer.Response;
+            //answerViewModel.Answers.Correct = answer.Correct;
+            return View(answerViewModel);
         }
 
         // POST: Answer/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, AnswerViewModel changedAnswer, IFormCollection collection)
         {
             try
             {
                 // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                _answerRepo.UpdateAnswer(changedAnswer.Answers);
+                AnswerViewModel answerViewModel = new AnswerViewModel();
+                answerViewModel.currentQuestionId = changedAnswer.Answers.QuestionId;
+                answerViewModel.Answers = changedAnswer.Answers;
+                return View(answerViewModel);
+             //   return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -102,7 +119,11 @@ namespace QuizWebApp.Controllers
         // GET: Answer/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            Answer answer = _answerRepo.GetAnswerById(id);
+            AnswerViewModel answerViewModel = new AnswerViewModel();
+            answerViewModel.currentQuestionId = answer.QuestionId;
+            answerViewModel.Answers = answer;
+            return View(answerViewModel);
         }
 
         // POST: Answer/Delete/5
@@ -113,8 +134,12 @@ namespace QuizWebApp.Controllers
             try
             {
                 // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
+                Answer answer = _answerRepo.GetAnswerById(id);
+                _answerRepo.DeleteAnswer(answer);
+                AnswerViewModel answerViewModel = new AnswerViewModel();
+                answerViewModel.currentQuestionId = answer.QuestionId;
+                answerViewModel.Answers = answer;
+                return RedirectToAction(nameof(EditedList));
             }
             catch
             {

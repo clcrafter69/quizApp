@@ -26,12 +26,15 @@ namespace QuizWebApp.Data
 
         public void DeleteAnswer(Answer answerToDelete)
         {
-            throw new NotImplementedException();
+            _dbContext.Answers.Remove(answerToDelete);
+            _dbContext.SaveChanges();
+           // throw new NotImplementedException();
         }
 
-        public Answer GetBlogById(int id)
+        public Answer GetAnswerById(int id)
         {
-            throw new NotImplementedException();
+            return _dbContext.Answers.Find(id);
+            //throw new NotImplementedException();
         }
 
         public List<Answer> ListAllAnswers()
@@ -41,7 +44,9 @@ namespace QuizWebApp.Data
 
         public void UpdateAnswer(Answer changedAnswer)
         {
-            throw new NotImplementedException();
+            _dbContext.Entry<Answer>(changedAnswer).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _dbContext.SaveChanges();
+            //throw new NotImplementedException();
         }
 
         public List<Answer> ListEditAnswers(int id)

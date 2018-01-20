@@ -42,19 +42,45 @@ namespace QuizWebApp.Controllers
         //    return _answerRepo.ListEditAnswers(id);
 
         //}
+        //[HttpGet("{id}/answers", Name = "GetAnswers")]
+        //public Question GetQAnswers(int id)
+        //{
+        //    // return "value";
+        //    var result = _questionRepo.GetQAnswers(id);
+        //    //var questionResult = new QuestionMap()
+        //    //{
+        //    //    Id = result.Id,
+        //    //    Questions = result.Questions,
+        //    //    LevelId = result.LevelId,
+        //    //    CategoryId = result.CategoryId
 
+        //    //};
+        //    //foreach (var ans in result.Answers)
+        //    //{
+        //    //    questionResult.Answers.Add(
+        //    //      new AnswerMap()
+        //    //      {
+        //    //          Id = ans.Id,
+        //    //          Response = ans.Response,
+        //    //          Correct = ans.Correct
+        //    //      });
+        //    //}
+        //    return result;
+        //    //return Ok(questionResult);
+
+        //}
 
         [HttpGet("{id}/answers", Name = "GetAnswers")]
         public IActionResult GetQAnswers(int id)
         {
             // return "value";
-            var result= _questionRepo.GetQAnswers(id);
+            var result = _questionRepo.GetQAnswers(id);
             var questionResult = new QuestionMap()
             {
                 Id = result.Id,
                 Questions = result.Questions,
                 LevelId = result.LevelId,
-                CategoryId = result.Id
+                CategoryId = result.CategoryId
 
             };
             foreach (var ans in result.Answers)
@@ -65,7 +91,7 @@ namespace QuizWebApp.Controllers
                       Id = ans.Id,
                       Response = ans.Response,
                       Correct = ans.Correct
-                  });                    
+                  });
             }
             //return result;
             return Ok(questionResult);
